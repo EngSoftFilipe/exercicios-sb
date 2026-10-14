@@ -1,4 +1,4 @@
-package br.com.javaprojects.models;
+package br.com.javaprojects.exerciciossb.models;
 
 public class Cliente {
     private int id;
