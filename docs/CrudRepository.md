@@ -13,6 +13,7 @@ public interface ProdutoRepository extends CrudRepository<Produto, Integer> {
  
 - `Produto`: a entidade (tabela) que esse repository cuida.
 - `Integer`: o tipo do id dessa entidade.
+
 A interface fica vazia, e mesmo assim funciona: o Spring escreve o código dos métodos quando a aplicação liga.
  
 ## Métodos principais
@@ -54,4 +55,7 @@ public class ProdutoController {
  
 - O `findAll()` devolve um `Iterable`, que é qualquer coisa que dá para percorrer item por item.
 - O `JpaRepository` é um primo maior: tem tudo do `CrudRepository` e mais recursos, como paginação e retorno em `List`.
+
 **Resumo:** o `CrudRepository` entrega pronto o criar, ler, atualizar e apagar, e você só diz qual entidade e qual tipo de id.
+
+**Analogia:** para quem já conhece o design pattern (padrão de projeto) DAO (Data Access Object), o `CrudRepository` faz o mesmo papel: concentra o acesso ao banco de uma entidade. A diferença é que, no DAO, você escreve os métodos, e no `CrudRepository`, o Spring escreve por você.
