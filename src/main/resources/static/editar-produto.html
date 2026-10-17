@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Produto</title>
+    <style>
+        body {
+            background-color: #202124;
+            color: #fff;
+        }
+        input, button {
+            border-radius: 7px;
+            color: #000;
+            background-color: #fff;
+        }
+        form div {
+            padding-top: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Editar produto</h1>
+
+    <form onsubmit="alterar(event)">
+        <div><input id="id" type="number" placeholder="ID do produto" required/></div>
+        <div><input id="nome" placeholder="Novo nome (Opcional)"/></div>
+        <div><input id="preco" type="number" step="0.01" placeholder="Novo preço (Opcional)"/></div>
+        <div><button>Salvar Alterações</button></div>  
+    </form>
+
+    <pre id="resultado"></pre>
+
+    <script>
+        function alterar(event){
+            event.preventDefault();
+
+            const id = document.getElementById("id").value;
+            const nome = document.getElementById("nome").value;
+            const preco = document.getElementById("preco").value;
+
+            const params = new URLSearchParams();
+            if(nome){ params.append("nome",nome); }
+            if(preco){ params.append("preco",preco); }
+
+            const resultado = document.getElementById("resultado");
+
+            fetch(`/api/produtos/${id}?${params}`, {method: "PATCH"})
+                .then(resposta => {
+                    if(!resposta.ok){
+                        throw new Error(`Erro ${resposta.status}`);
+                    }
+                    return resposta.json();
+                })
+                .then(produto => {
+                    resultado.textContent = JSON.stringify(produto, null, 2);
+                })
+                .catch(erro => {
+                    resultado.textContent = erro.message;
+                });
+        }
+    </script>
+</body>
+</html>

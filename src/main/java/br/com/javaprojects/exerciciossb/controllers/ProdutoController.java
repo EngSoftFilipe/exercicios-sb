@@ -2,6 +2,8 @@ package br.com.javaprojects.exerciciossb.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,8 +20,7 @@ public class ProdutoController {
     private ProdutoRepository produtoRepository;
     
     @PostMapping
-    public @ResponseBody Produto novoProduto(@RequestParam String nome){
-        Produto produto = new Produto(nome);
+    public @ResponseBody Produto novoProduto(Produto produto){
         produtoRepository.save(produto);
         return produto;
     }
@@ -28,4 +29,17 @@ public class ProdutoController {
     public Iterable<Produto> obterProduto(){
         return produtoRepository.findAll();
     }
+
+    @PatchMapping("/{id}") 
+    public Produto alterarDadosPendentes(
+        @PathVariable int id,
+        @RequestParam(required = false) String nome, 
+        @RequestParam(required = false) Double preco){
+            Produto produto = produtoRepository.findById(id).orElseThrow();
+
+                if(nome != null){ produto.setNome(nome); }
+                if(preco != null){ produto.setPreco(preco); }
+
+            return produtoRepository.save(produto);
+        }
 }
