@@ -3,6 +3,8 @@ package br.com.javaprojects.exerciciossb.controllers;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +28,18 @@ public class ProdutoController {
     @Autowired 
     private ProdutoRepository produtoRepository;
     
+    // Não recomendado se tiver muitos produtos, subir 1 milhão de produtos de uma vez só pode derrubar a API
+    // Em caso de muitos produtos, fazer uma consulta paginada
     @GetMapping
     public Iterable<Produto> obterProduto(){
         return produtoRepository.findAll();
+    }
+
+    // Consulta paginada
+    @GetMapping(path = "/pagina/{numeroPagina}")
+    public Iterable<Produto> obterProdutoPorPagina(@PathVariable int numeroPagina){
+        Pageable pagina = PageRequest.of(numeroPagina, 5);
+        return produtoRepository.findAll(pagina).getContent();
     }
 
     @GetMapping(path = "/{id}")
