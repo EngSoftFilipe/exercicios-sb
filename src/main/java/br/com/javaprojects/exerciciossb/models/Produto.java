@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity 
 public class Produto {
@@ -11,9 +14,13 @@ public class Produto {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String nome;
-    private Double preco;
 
+    @NotBlank 
+    private String nome;
+
+    @NotNull
+    @DecimalMin("0.01")
+    private Double preco;
     
     public Produto(){}
     
