@@ -1,15 +1,19 @@
 package br.com.javaprojects.exerciciossb.controllers;
 
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import br.com.javaprojects.exerciciossb.models.Produto;
 import br.com.javaprojects.exerciciossb.models.repositories.ProdutoRepository;
 import jakarta.validation.Valid;
@@ -22,12 +26,6 @@ public class ProdutoController {
     @Autowired 
     private ProdutoRepository produtoRepository;
     
-    @PostMapping
-    public @ResponseBody Produto novoProduto(@Valid Produto produto){
-        produtoRepository.save(produto);
-        return produto;
-    }
-
     @GetMapping
     public Iterable<Produto> obterProduto(){
         return produtoRepository.findAll();
@@ -36,6 +34,14 @@ public class ProdutoController {
     @GetMapping(path = "/{id}")
     public Optional<Produto> obterProdutoPorId(@PathVariable int id){
         return produtoRepository.findById(id);
+    }
+
+    // Não recomendado fazer um método para duas tarefas
+    // Pode acontecer de enviar um POST com id existente e sobrescrever ao invés de criar um novo produto
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
+    public @ResponseBody Produto novoProduto(@Valid Produto produto){
+        produtoRepository.save(produto);
+        return produto;
     }
 
     @PatchMapping("/{id}") 
@@ -50,4 +56,13 @@ public class ProdutoController {
 
             return produtoRepository.save(produto);
         }
+
+    @DeleteMapping(path = "/{id}") 
+    public ResponseEntity<Void> excluirProduto(@PathVariable int id){
+        if(!produtoRepository.existsById(id)){
+            return ResponseEntity.notFound().build();
+        }
+        produtoRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
